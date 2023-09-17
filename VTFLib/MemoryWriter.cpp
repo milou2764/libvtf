@@ -84,7 +84,7 @@ vlUInt CMemoryWriter::Seek(vlLong lOffset, vlUInt uiMode)
 		return 0;
 	}
 
-	switch(uiMode)
+	switch((int)uiMode)
 	{
 		case 0:
 			this->uiPointer = 0;
