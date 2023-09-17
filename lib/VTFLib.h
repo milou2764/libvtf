@@ -455,13 +455,13 @@ extern "C" {
 // VTFLib
 //
 
-VTFLIB_API vlUInt vlGetVersion();
-VTFLIB_API const vlChar *vlGetVersionString();
+VTFLIB_API vlUInt vlGetVersion(void);
+VTFLIB_API const vlChar *vlGetVersionString(void);
 
-VTFLIB_API const vlChar *vlGetLastError();
+VTFLIB_API const vlChar *vlGetLastError(void);
 
-VTFLIB_API vlBool vlInitialize();
-VTFLIB_API vlVoid vlShutdown();
+VTFLIB_API vlBool vlInitialize(void);
+VTFLIB_API vlVoid vlShutdown(void);
 
 VTFLIB_API vlBool vlGetBoolean(VTFLibOption Option);
 VTFLIB_API vlVoid vlSetBoolean(VTFLibOption Option, vlBool bValue);
@@ -483,7 +483,7 @@ VTFLIB_API vlVoid *vlGetProc(VLProc Proc);
 // Memory managment routines.
 //
 
-VTFLIB_API vlBool vlImageIsBound();
+VTFLIB_API vlBool vlImageIsBound(void);
 VTFLIB_API vlBool vlBindImage(vlUInt uiImage);
 
 VTFLIB_API vlBool vlCreateImage(vlUInt *uiImage);
@@ -498,9 +498,9 @@ VTFLIB_API vlVoid vlImageCreateDefaultCreateStructure(SVTFCreateOptions *VTFCrea
 VTFLIB_API vlBool vlImageCreate(vlUInt uiWidth, vlUInt uiHeight, vlUInt uiFrames, vlUInt uiFaces, vlUInt uiSlices, VTFImageFormat ImageFormat, vlBool bThumbnail, vlBool bMipmaps, vlBool bNullImageData);
 VTFLIB_API vlBool vlImageCreateSingle(vlUInt uiWidth, vlUInt uiHeight, vlByte *lpImageDataRGBA8888, SVTFCreateOptions *VTFCreateOptions);
 VTFLIB_API vlBool vlImageCreateMultiple(vlUInt uiWidth, vlUInt uiHeight, vlUInt uiFrames, vlUInt uiFaces, vlUInt uiSlices, vlByte **lpImageDataRGBA8888, SVTFCreateOptions *VTFCreateOptions);
-VTFLIB_API vlVoid vlImageDestroy();
+VTFLIB_API vlVoid vlImageDestroy(void);
 
-VTFLIB_API vlBool vlImageIsLoaded();
+VTFLIB_API vlBool vlImageIsLoaded(void);
 
 VTFLIB_API vlBool vlImageLoad(const vlChar *cFileName, vlBool bHeaderOnly);
 VTFLIB_API vlBool vlImageLoadLump(const vlVoid *lpData, vlUInt uiBufferSize, vlBool bHeaderOnly);
@@ -514,36 +514,36 @@ VTFLIB_API vlBool vlImageSaveProc(vlVoid *pUserData);
 // Image routines.
 //
 
-VTFLIB_API vlUInt vlImageGetHasImage();
+VTFLIB_API vlUInt vlImageGetHasImage(void);
 
-VTFLIB_API vlUInt vlImageGetMajorVersion();
-VTFLIB_API vlUInt vlImageGetMinorVersion();
-VTFLIB_API vlUInt vlImageGetSize();
+VTFLIB_API vlUInt vlImageGetMajorVersion(void);
+VTFLIB_API vlUInt vlImageGetMinorVersion(void);
+VTFLIB_API vlUInt vlImageGetSize(void);
 
-VTFLIB_API vlUInt vlImageGetWidth();
-VTFLIB_API vlUInt vlImageGetHeight();
-VTFLIB_API vlUInt vlImageGetDepth();
+VTFLIB_API vlUInt vlImageGetWidth(void);
+VTFLIB_API vlUInt vlImageGetHeight(void);
+VTFLIB_API vlUInt vlImageGetDepth(void);
 
-VTFLIB_API vlUInt vlImageGetFrameCount();
-VTFLIB_API vlUInt vlImageGetFaceCount();
-VTFLIB_API vlUInt vlImageGetMipmapCount();
+VTFLIB_API vlUInt vlImageGetFrameCount(void);
+VTFLIB_API vlUInt vlImageGetFaceCount(void);
+VTFLIB_API vlUInt vlImageGetMipmapCount(void);
 
-VTFLIB_API vlUInt vlImageGetStartFrame();
+VTFLIB_API vlUInt vlImageGetStartFrame(void);
 VTFLIB_API vlVoid vlImageSetStartFrame(vlUInt uiStartFrame);
 
-VTFLIB_API vlUInt vlImageGetFlags();
+VTFLIB_API vlUInt vlImageGetFlags(void);
 VTFLIB_API vlVoid vlImageSetFlags(vlUInt uiFlags);
 
 VTFLIB_API vlBool vlImageGetFlag(VTFImageFlag ImageFlag);
 VTFLIB_API vlVoid vlImageSetFlag(VTFImageFlag ImageFlag, vlBool bState);
 
-VTFLIB_API vlSingle vlImageGetBumpmapScale();
+VTFLIB_API vlSingle vlImageGetBumpmapScale(void);
 VTFLIB_API vlVoid vlImageSetBumpmapScale(vlSingle sBumpmapScale);
 
 VTFLIB_API vlVoid vlImageGetReflectivity(vlSingle *sX, vlSingle *sY, vlSingle *sZ);
 VTFLIB_API vlVoid vlImageSetReflectivity(vlSingle sX, vlSingle sY, vlSingle sZ);
 
-VTFLIB_API VTFImageFormat vlImageGetFormat();
+VTFLIB_API VTFImageFormat vlImageGetFormat(void);
 
 VTFLIB_API vlByte *vlImageGetData(vlUInt uiFrame, vlUInt uiFace, vlUInt uiSlice, vlUInt uiMipmapLevel);
 VTFLIB_API vlVoid vlImageSetData(vlUInt uiFrame, vlUInt uiFace, vlUInt uiSlice, vlUInt uiMipmapLevel, vlByte *lpData);
@@ -552,23 +552,23 @@ VTFLIB_API vlVoid vlImageSetData(vlUInt uiFrame, vlUInt uiFace, vlUInt uiSlice, 
 // Thumbnail routines.
 //
 
-VTFLIB_API vlBool vlImageGetHasThumbnail();
+VTFLIB_API vlBool vlImageGetHasThumbnail(void);
 
-VTFLIB_API vlUInt vlImageGetThumbnailWidth();
-VTFLIB_API vlUInt vlImageGetThumbnailHeight();
+VTFLIB_API vlUInt vlImageGetThumbnailWidth(void);
+VTFLIB_API vlUInt vlImageGetThumbnailHeight(void);
 
-VTFLIB_API VTFImageFormat vlImageGetThumbnailFormat();
+VTFLIB_API VTFImageFormat vlImageGetThumbnailFormat(void);
 
-VTFLIB_API vlByte *vlImageGetThumbnailData();
+VTFLIB_API vlByte *vlImageGetThumbnailData(void);
 VTFLIB_API vlVoid vlImageSetThumbnailData(vlByte *lpData);
 
 //
 // Resource routines.
 //
 
-VTFLIB_API vlBool vlImageGetSupportsResources();
+VTFLIB_API vlBool vlImageGetSupportsResources(void);
 
-VTFLIB_API vlUInt vlImageGetResourceCount();
+VTFLIB_API vlUInt vlImageGetResourceCount(void);
 VTFLIB_API vlUInt vlImageGetResourceType(vlUInt uiIndex);
 VTFLIB_API vlBool vlImageGetHasResource(vlUInt uiType);
 
@@ -582,14 +582,14 @@ VTFLIB_API vlVoid *vlImageSetResourceData(vlUInt uiType, vlUInt uiSize, vlVoid *
 VTFLIB_API vlBool vlImageGenerateMipmaps(vlUInt uiFace, vlUInt uiFrame, VTFMipmapFilter MipmapFilter, VTFSharpenFilter SharpenFilter);
 VTFLIB_API vlBool vlImageGenerateAllMipmaps(VTFMipmapFilter MipmapFilter, VTFSharpenFilter SharpenFilter);
 
-VTFLIB_API vlBool vlImageGenerateThumbnail();
+VTFLIB_API vlBool vlImageGenerateThumbnail(void);
 
 VTFLIB_API vlBool vlImageGenerateNormalMap(vlUInt uiFrame, VTFKernelFilter KernelFilter, VTFHeightConversionMethod HeightConversionMethod, VTFNormalAlphaResult NormalAlphaResult);
 VTFLIB_API vlBool vlImageGenerateAllNormalMaps(VTFKernelFilter KernelFilter, VTFHeightConversionMethod HeightConversionMethod, VTFNormalAlphaResult NormalAlphaResult);
 
-VTFLIB_API vlBool vlImageGenerateSphereMap();
+VTFLIB_API vlBool vlImageGenerateSphereMap(void);
 
-VTFLIB_API vlBool vlImageComputeReflectivity();
+VTFLIB_API vlBool vlImageComputeReflectivity(void);
 
 //
 // Conversion routines.
@@ -623,7 +623,7 @@ VTFLIB_API vlVoid vlImageMirrorImage(vlByte *lpImageDataRGBA8888, vlUInt uiWidth
 // Memory managment routines.
 //
 
-VTFLIB_API vlBool vlMaterialIsBound();
+VTFLIB_API vlBool vlMaterialIsBound(void);
 VTFLIB_API vlBool vlBindMaterial(vlUInt uiMaterial);
 
 VTFLIB_API vlBool vlCreateMaterial(vlUInt *uiMaterial);
@@ -633,9 +633,9 @@ VTFLIB_API vlVoid vlDeleteMaterial(vlUInt uiMaterial);
 // Library routines.  (Basically class wrappers.)
 //
 VTFLIB_API vlBool vlMaterialCreate(const vlChar *cRoot);
-VTFLIB_API vlVoid vlMaterialDestroy();
+VTFLIB_API vlVoid vlMaterialDestroy(void);
 
-VTFLIB_API vlBool vlMaterialIsLoaded();
+VTFLIB_API vlBool vlMaterialIsLoaded(void);
 
 VTFLIB_API vlBool vlMaterialLoad(const vlChar *cFileName);
 VTFLIB_API vlBool vlMaterialLoadLump(const vlVoid *lpData, vlUInt uiBufferSize);
@@ -649,26 +649,26 @@ VTFLIB_API vlBool vlMaterialSaveProc(vlVoid *pUserData);
 // Node routines.
 //
 
-VTFLIB_API vlBool vlMaterialGetFirstNode();
-VTFLIB_API vlBool vlMaterialGetLastNode();
-VTFLIB_API vlBool vlMaterialGetNextNode();
-VTFLIB_API vlBool vlMaterialGetPreviousNode();
+VTFLIB_API vlBool vlMaterialGetFirstNode(void);
+VTFLIB_API vlBool vlMaterialGetLastNode(void);
+VTFLIB_API vlBool vlMaterialGetNextNode(void);
+VTFLIB_API vlBool vlMaterialGetPreviousNode(void);
 
-VTFLIB_API vlBool vlMaterialGetParentNode();
+VTFLIB_API vlBool vlMaterialGetParentNode(void);
 VTFLIB_API vlBool vlMaterialGetChildNode(const vlChar *cName);
 
-VTFLIB_API const vlChar *vlMaterialGetNodeName();
+VTFLIB_API const vlChar *vlMaterialGetNodeName(void);
 VTFLIB_API vlVoid vlMaterialSetNodeName(const vlChar *cName);
 
-VTFLIB_API VMTNodeType vlMaterialGetNodeType();
+VTFLIB_API VMTNodeType vlMaterialGetNodeType(void);
 
-VTFLIB_API const vlChar *vlMaterialGetNodeString();
+VTFLIB_API const vlChar *vlMaterialGetNodeString(void);
 VTFLIB_API vlVoid vlMaterialSetNodeString(const vlChar *cValue);
 
-VTFLIB_API vlUInt vlMaterialGetNodeInteger();
+VTFLIB_API vlUInt vlMaterialGetNodeInteger(void);
 VTFLIB_API vlVoid vlMaterialSetNodeInteger(vlUInt iValue);
 
-VTFLIB_API vlFloat vlMaterialGetNodeSingle();
+VTFLIB_API vlFloat vlMaterialGetNodeSingle(void);
 VTFLIB_API vlVoid vlMaterialSetNodeSingle(vlFloat sValue);
 
 VTFLIB_API vlVoid vlMaterialAddNodeGroup(const vlChar *cName);
