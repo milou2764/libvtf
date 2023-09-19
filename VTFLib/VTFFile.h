@@ -38,7 +38,7 @@ extern "C" {
 #pragma pack(1)
 typedef struct tagSVTFImageFormatInfo
 {
-	vlChar *lpName;					//!< Enumeration text equivalent.
+	char const *lpName;					//!< Enumeration text equivalent.
 	vlUInt	uiBitsPerPixel;			//!< Format bits per pixel.
 	vlUInt	uiBytesPerPixel;		//!< Format bytes per pixel.
 	vlUInt	uiRedBitsPerPixel;		//!< Format red bits per pixel.  0 for N/A.
@@ -48,7 +48,7 @@ typedef struct tagSVTFImageFormatInfo
 	vlBool	bIsCompressed;			//!< Format is compressed (DXT).
 	vlBool	bIsSupported;			//!< Format is supported by VTFLib.
 } SVTFImageFormatInfo;
-#pragma pack()
+#pragma pack(4)
 
 //! VTF Creation options struct.
 /*!  
@@ -102,7 +102,7 @@ typedef struct tagSVTFCreateOptions
 
 	vlBool bSphereMap;									//!< Generate a sphere map for six faced environment maps.
 } SVTFCreateOptions;
-#pragma pack()
+#pragma pack(4)
 
 #ifdef __cplusplus
 }
@@ -165,8 +165,6 @@ namespace VTFLib
 		CVTFFile(const CVTFFile &VTFFile, VTFImageFormat ImageFormat);
 
 		~CVTFFile();	//!< Deconstructor
-
-	public:
 		
 		//! Creates a new empty VTF image..
 		/*!
@@ -411,8 +409,6 @@ namespace VTFLib
 			\see GetFormat()
 		*/
 		vlVoid SetData(vlUInt uiFrame, vlUInt uiFace, vlUInt uiSlice, vlUInt uiMipmapLevel, vlByte *lpData);
-
-	public:
 		
 		vlBool GetHasThumbnail() const;		//!< Returns if a the current VTF image image contains a thumbnail version.
 
@@ -440,7 +436,6 @@ namespace VTFLib
 		*/
 		vlVoid SetThumbnailData(vlByte *lpData);
 
-	public:
 		vlBool GetSupportsResources() const;			//!< Returns true if the current VTF file version supports resources.
 
 		vlUInt GetResourceCount() const;				//!< Returns the number of resources contained within the VTF file.
@@ -468,8 +463,6 @@ namespace VTFLib
 			\return a pointer to the resource data buffer if the resource exists or was created.
 		*/
 		vlVoid *SetResourceData(vlUInt uiType, vlUInt uiSize, vlVoid *lpData);
-
-	public:
 
 		//! Generate MIP maps from the main image data.
 		/*!
@@ -538,12 +531,8 @@ namespace VTFLib
 
 		vlBool GenerateSphereMap();		//!< Creates a spheremap from using the 6 faces of the image making up its cubemap.
 
-	public:
-
 		vlBool ComputeReflectivity();	//!< Calculates and sets the reflectivity vector values for the VTF image based on the colour averages of each pixel.
 	
-	public:
-
 		//! Get VTFImageFormat info.
 		/*!
 			Returns a SImageFormatInfo info struct for the specified VTFImageFormat.

@@ -730,7 +730,7 @@ namespace VTFLib
 		class VTFLIB_API CVMTValueNode : public CVMTNode
 		{
 		public:
-			CVMTValueNode(const vlChar *cName);
+			explicit CVMTValueNode(const vlChar *cName);
 			virtual ~CVMTValueNode();
 
 			virtual vlVoid SetValue(const vlChar *cValue) = 0;
@@ -767,7 +767,7 @@ namespace VTFLib
 			vlInt iValue;
 
 		public:
-			CVMTIntegerNode(const vlChar *cName);
+			explicit CVMTIntegerNode(const vlChar *cName);
 			CVMTIntegerNode(const vlChar *cName, const vlChar *cValue);
 			CVMTIntegerNode(const vlChar *cName, vlInt iValue);
 			CVMTIntegerNode(const CVMTIntegerNode &IntegerNode);
@@ -791,7 +791,7 @@ namespace VTFLib
 			vlFloat fValue;
 
 		public:
-			CVMTSingleNode(const vlChar *cName);
+			explicit CVMTSingleNode(const vlChar *cName);
 			CVMTSingleNode(const vlChar *cName, const vlChar *cValue);
 			CVMTSingleNode(const vlChar *cName, vlFloat fValue);
 			CVMTSingleNode(const CVMTSingleNode &SingleNode);
@@ -818,14 +818,13 @@ namespace VTFLib
 			CVMTNodeList *VMTNodeList;
 
 		public:
-			CVMTGroupNode(const vlChar *cName);
+			explicit CVMTGroupNode(const vlChar *cName);
 			CVMTGroupNode(const CVMTGroupNode &GroupNode);
 			virtual ~CVMTGroupNode();
 
 			virtual VMTNodeType GetType() const;
 			virtual CVMTNode *Clone() const;
-
-		public:
+			
 			vlUInt GetNodeCount() const;
 
 			CVMTNode *AddNode(CVMTNode *VMTNode);

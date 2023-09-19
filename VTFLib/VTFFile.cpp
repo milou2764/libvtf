@@ -157,13 +157,13 @@ vlBool nvDXTCompressWrapper(vlByte *lpImageDataRGBA, vlUInt uiWidth, vlUInt uiHe
 // ------------------
 CVTFFile::CVTFFile()
 {
-	this->Header = 0;
+	this->Header = nullptr;
 
 	this->uiImageBufferSize = 0;
-	this->lpImageData = 0;
+	this->lpImageData = nullptr;
 
 	this->uiThumbnailBufferSize = 0;
-	this->lpThumbnailImageData = 0;
+	this->lpThumbnailImageData = nullptr;
 }
 
 //
@@ -172,13 +172,13 @@ CVTFFile::CVTFFile()
 //
 CVTFFile::CVTFFile(const CVTFFile &VTFFile)
 {
-	this->Header = 0;
+	this->Header = nullptr;
 
 	this->uiImageBufferSize = 0;
-	this->lpImageData = 0;
+	this->lpImageData = nullptr;
 
 	this->uiThumbnailBufferSize = 0;
-	this->lpThumbnailImageData = 0;
+	this->lpThumbnailImageData = nullptr;
 
 	if(VTFFile.IsLoaded())
 	{
@@ -207,13 +207,13 @@ CVTFFile::CVTFFile(const CVTFFile &VTFFile)
 //
 CVTFFile::CVTFFile(const CVTFFile &VTFFile, VTFImageFormat ImageFormat)
 {
-	this->Header = 0;
+	this->Header = nullptr;
 
 	this->uiImageBufferSize = 0;
-	this->lpImageData = 0;
+	this->lpImageData = nullptr;
 
 	this->uiThumbnailBufferSize = 0;
-	this->lpThumbnailImageData = 0;
+	this->lpThumbnailImageData = nullptr;
 
 	if(VTFFile.IsLoaded())
 	{
@@ -223,20 +223,7 @@ CVTFFile::CVTFFile(const CVTFFile &VTFFile, VTFImageFormat ImageFormat)
 		// Set new format.
 		this->Header->ImageFormat = ImageFormat;
 
-		// Check flags.
-		//if(this->Header->Version[0] < VTF_MAJOR_VERSION || (this->Header->Version[0] == VTF_MAJOR_VERSION && this->Header->Version[1] <= VTF_MINOR_VERSION_MIN_RESOURCE))
-		//{
-		//	if(!this->GetImageFormatInfo(ImageFormat).bIsCompressed)
-		//	{
-		//		this->Header->Flags |= TEXTUREFLAGS_DEPRECATED_NOCOMPRESS;
-		//	}
-		//	else
-		//	{
-		//		this->Header->Flags &= ~TEXTUREFLAGS_DEPRECATED_NOCOMPRESS;
-		//	}
-		//}
-
-		if(this->GetImageFormatInfo(ImageFormat).uiAlphaBitsPerPixel == 1)
+		if(VTFLib::CVTFFile::GetImageFormatInfo(ImageFormat).uiAlphaBitsPerPixel == 1)
 		{
 			this->Header->Flags |= TEXTUREFLAGS_ONEBITALPHA;
 		}
@@ -245,7 +232,7 @@ CVTFFile::CVTFFile(const CVTFFile &VTFFile, VTFImageFormat ImageFormat)
 			this->Header->Flags &= ~TEXTUREFLAGS_ONEBITALPHA;
 		}
 
-		if(this->GetImageFormatInfo(ImageFormat).uiAlphaBitsPerPixel > 1)
+		if(VTFLib::CVTFFile::GetImageFormatInfo(ImageFormat).uiAlphaBitsPerPixel > 1)
 		{
 			this->Header->Flags |= TEXTUREFLAGS_EIGHTBITALPHA;
 		}
@@ -262,7 +249,7 @@ CVTFFile::CVTFFile(const CVTFFile &VTFFile, VTFImageFormat ImageFormat)
 			vlUInt uiMipmaps = VTFFile.GetMipmapCount();
 			vlUInt uiSlices = VTFFile.GetDepth();
 
-			this->uiImageBufferSize = this->ComputeImageSize(this->Header->Width, this->Header->Height, uiMipmaps, this->Header->ImageFormat) * uiFrames * uiFaces;
+			this->uiImageBufferSize = VTFLib::CVTFFile::ComputeImageSize(this->Header->Width, this->Header->Height, uiMipmaps, this->Header->ImageFormat) * uiFrames * uiFaces;
 			this->lpImageData = new vlByte[this->uiImageBufferSize];
 
 			//vlByte *lpImageData = new vlByte[this->ComputeImageSize(this->Header->Width, this->Header->Height, 1, IMAGE_FORMAT_RGBA8888)];
@@ -276,11 +263,11 @@ CVTFFile::CVTFFile(const CVTFFile &VTFFile, VTFImageFormat ImageFormat)
 						for(vlUInt l = 0; l < uiMipmaps; l++)
 						{
 							vlUInt uiMipmapWidth, uiMipmapHeight, uiMipmapDepth;
-							this->ComputeMipmapDimensions(this->Header->Width, this->Header->Height, 1, l, uiMipmapWidth, uiMipmapHeight, uiMipmapDepth);
+							VTFLib::CVTFFile::ComputeMipmapDimensions(this->Header->Width, this->Header->Height, 1, l, uiMipmapWidth, uiMipmapHeight, uiMipmapDepth);
 
 							//this->ConvertToRGBA8888(VTFFile.GetData(i, j, k, l), lpImageData, uiMipmapWidth, uiMipmapHeight, VTFFile.GetFormat());
 							//this->ConvertFromRGBA8888(lpImageData, this->GetData(i, j, k, l), uiMipmapWidth, uiMipmapHeight, this->GetFormat());
-							this->Convert(VTFFile.GetData(i, j, k, l), this->GetData(i, j, k, l), uiMipmapWidth, uiMipmapHeight, VTFFile.GetFormat(), this->GetFormat());
+							VTFLib::CVTFFile::Convert(VTFFile.GetData(i, j, k, l), this->GetData(i, j, k, l), uiMipmapWidth, uiMipmapHeight, VTFFile.GetFormat(), this->GetFormat());
 						}
 					}
 				}
@@ -371,7 +358,7 @@ vlBool CVTFFile::Create(vlUInt uiWidth, vlUInt uiHeight, vlUInt uiFrames, vlUInt
 		return vlFalse;
 	}
 
-	if(!this->GetImageFormatInfo(ImageFormat).bIsSupported)
+	if(!VTFLib::CVTFFile::GetImageFormatInfo(ImageFormat).bIsSupported)
 	{
 		LastError.Set("Image format not supported.");
 		return vlFalse;
@@ -418,8 +405,8 @@ vlBool CVTFFile::Create(vlUInt uiWidth, vlUInt uiHeight, vlUInt uiFrames, vlUInt
 	this->Header->HeaderSize = 0;
 	this->Header->Width = (vlShort)uiWidth;
 	this->Header->Height = (vlShort)uiHeight;
-	this->Header->Flags = (this->GetImageFormatInfo(ImageFormat).uiAlphaBitsPerPixel == 1 ? TEXTUREFLAGS_ONEBITALPHA : 0)
-							| (this->GetImageFormatInfo(ImageFormat).uiAlphaBitsPerPixel > 1 ? TEXTUREFLAGS_EIGHTBITALPHA : 0)
+	this->Header->Flags = (VTFLib::CVTFFile::GetImageFormatInfo(ImageFormat).uiAlphaBitsPerPixel == 1 ? TEXTUREFLAGS_ONEBITALPHA : 0)
+							| (VTFLib::CVTFFile::GetImageFormatInfo(ImageFormat).uiAlphaBitsPerPixel > 1 ? TEXTUREFLAGS_EIGHTBITALPHA : 0)
 							| (uiFaces == 1 ? 0 : TEXTUREFLAGS_ENVMAP)
 							| (bMipmaps ? 0 : TEXTUREFLAGS_NOMIP | TEXTUREFLAGS_NOLOD);
 	this->Header->Frames = (vlShort)uiFrames;
@@ -429,7 +416,7 @@ vlBool CVTFFile::Create(vlUInt uiWidth, vlUInt uiHeight, vlUInt uiFrames, vlUInt
 	this->Header->Reflectivity[2] = 1.0f;
 	this->Header->BumpScale = 1.0f;
 	this->Header->ImageFormat = ImageFormat;
-	this->Header->MipCount = bMipmaps ? (vlByte)this->ComputeMipmapCount(uiWidth, uiHeight, uiSlices) : 1;
+	this->Header->MipCount = bMipmaps ? (vlByte)VTFLib::CVTFFile::ComputeMipmapCount(uiWidth, uiHeight, uiSlices) : 1;
 	this->Header->Depth = (vlShort)uiSlices;
 	this->Header->ResourceCount = 0;
 
@@ -2710,7 +2697,7 @@ vlBool CVTFFile::GenerateSphereMap()
 
 	//#pragma warning(default: 4244)
 
-	if (!this->ConvertFromRGBA8888(lpSphereMapData,
+	if (!VTFLib::CVTFFile::ConvertFromRGBA8888(lpSphereMapData,
 									this->GetData(0, CUBEMAP_FACE_SphereMap, 0, 0),
 									this->Header->Width,
 									this->Header->Height,
@@ -2755,7 +2742,7 @@ vlBool CVTFFile::ComputeReflectivity()
 	this->Header->Reflectivity[1] = 0.0f;
 	this->Header->Reflectivity[2] = 0.0f;
 
-    vlByte *lpImageData = new vlByte[this->ComputeImageSize(this->Header->Width, this->Header->Height, 1, IMAGE_FORMAT_RGBA8888)];
+    vlByte *lpImageData = new vlByte[VTFLib::CVTFFile::ComputeImageSize(this->Header->Width, this->Header->Height, 1, IMAGE_FORMAT_RGBA8888)];
 
 	vlUInt uiFrameCount = this->GetFrameCount();
 	vlUInt uiFaceCount = this->GetFaceCount();
@@ -2798,8 +2785,8 @@ vlBool CVTFFile::ComputeReflectivity()
 // Array which holds information about our image format
 // (taken from imageloader.cpp, Valve Source SDK)
 //------------------------------------------------------
-static SVTFImageFormatInfo VTFImageFormatInfo[] =
-{
+const static std::array<SVTFImageFormatInfo, 39> VTFImageFormatInfo =
+{{
 	{ "RGBA8888",			 32,  4,  8,  8,  8,  8, vlFalse,  vlTrue },		// IMAGE_FORMAT_RGBA8888,
 	{ "ABGR8888",			 32,  4,  8,  8,  8,  8, vlFalse,  vlTrue },		// IMAGE_FORMAT_ABGR8888, 
 	{ "RGB888",				 24,  3,  8,  8,  8,  0, vlFalse,  vlTrue },		// IMAGE_FORMAT_RGB888,
@@ -2838,23 +2825,8 @@ static SVTFImageFormatInfo VTFImageFormatInfo[] =
 	{ "ATI DST24",			 24,  3,  0,  0,  0,  0, vlFalse,  vlTrue },		// IMAGE_FORMAT_ATI_DST24
 	{ "nVidia NULL",		 32,  4,  0,  0,  0,  0, vlFalse,  vlTrue },		// IMAGE_FORMAT_NV_NULL
 	{ "ATI1N",				  4,  0,  0,  0,  0,  0,  vlTrue,  vlTrue },		// IMAGE_FORMAT_ATI1N
-	{ "ATI2N",				  8,  0,  0,  0,  0,  0,  vlTrue,  vlTrue }/*,		// IMAGE_FORMAT_ATI2N
-	{ "Xbox360 DST16",		 16,  0,  0,  0,  0,  0, vlFalse,  vlTrue },		// IMAGE_FORMAT_X360_DST16
-	{ "Xbox360 DST24",		 24,  0,  0,  0,  0,  0, vlFalse,  vlTrue },		// IMAGE_FORMAT_X360_DST24
-	{ "Xbox360 DST24F",		 24,  0,  0,  0,  0,  0, vlFalse , vlTrue },		// IMAGE_FORMAT_X360_DST24F
-	{ "Linear BGRX8888",	 32,  4,  8,  8,  8,  0, vlFalse,  vlTrue },		// IMAGE_FORMAT_LINEAR_BGRX8888
-	{ "Linear RGBA8888",     32,  4,  8,  8,  8,  8, vlFalse,  vlTrue },		// IMAGE_FORMAT_LINEAR_RGBA8888
-	{ "Linear ABGR8888",	 32,  4,  8,  8,  8,  8, vlFalse,  vlTrue },		// IMAGE_FORMAT_LINEAR_ABGR8888
-	{ "Linear ARGB8888",	 32,  4,  8,  8,  8,  8, vlFalse,  vlTrue },		// IMAGE_FORMAT_LINEAR_ARGB8888
-	{ "Linear BGRA8888",	 32,  4,  8,  8,  8,  8, vlFalse,  vlTrue },		// IMAGE_FORMAT_LINEAR_BGRA8888
-	{ "Linear RGB888",		 24,  3,  8,  8,  8,  0, vlFalse,  vlTrue },		// IMAGE_FORMAT_LINEAR_RGB888
-	{ "Linear BGR888",		 24,  3,  8,  8,  8,  0, vlFalse,  vlTrue },		// IMAGE_FORMAT_LINEAR_BGR888
-	{ "Linear BGRX5551",	 16,  2,  5,  5,  5,  0, vlFalse,  vlTrue },		// IMAGE_FORMAT_LINEAR_BGRX5551
-	{ "Linear I8",			  8,  1,  0,  0,  0,  0, vlFalse,  vlTrue },		// IMAGE_FORMAT_LINEAR_I8
-	{ "Linear RGBA16161616", 64,  8, 16, 16, 16, 16, vlFalse,  vlTrue },		// IMAGE_FORMAT_LINEAR_RGBA16161616
-	{ "LE BGRX8888",         32,  4,  8,  8,  8,  0, vlFalse,  vlTrue },		// IMAGE_FORMAT_LE_BGRX8888
-	{ "LE BGRA8888",		 32,  4,  8,  8,  8,  8, vlFalse,  vlTrue }*/		// IMAGE_FORMAT_LE_BGRA8888
-};
+	{ "ATI2N",				  8,  0,  0,  0,  0,  0,  vlTrue,  vlTrue },		// IMAGE_FORMAT_ATI2N
+}};
 
 SVTFImageFormatInfo const &CVTFFile::GetImageFormatInfo(VTFImageFormat ImageFormat)
 {
@@ -3601,7 +3573,7 @@ static SVTFImageConvertInfo VTFImageConvertInfo[] =
 	{	 16,  2,  5,  6,  5,  0,	 0,	 1,	 2,	-1, vlFalse,  vlTrue,	NULL,	NULL,		IMAGE_FORMAT_RGB565},
 	{	  8,  1,  8,  8,  8,  0,	 0,	-1,	-1,	-1, vlFalse,  vlTrue,	ToLuminance,	FromLuminance,	IMAGE_FORMAT_I8},
 	{	 16,  2,  8,  8,  8,  8,	 0,	-1,	-1,	 1, vlFalse,  vlTrue,	ToLuminance,	FromLuminance,	IMAGE_FORMAT_IA88},
-	{	  8,  1,  0,  0,  0,  0,	-1,	-1,	-1,	-1, vlFalse, vlFalse,	NULL,	NULL,		IMAGE_FORMAT_P8},
+	{	  8,  1,  0,  0,  0,  0,	-1,	-1,	-1,	-1, vlFalse, vlFalse,	nullptr,	NULL,		IMAGE_FORMAT_P8},
 	{ 	  8,  1,  0,  0,  0,  8,	-1,	-1,	-1,	 0, vlFalse,  vlTrue,	NULL,	NULL,		IMAGE_FORMAT_A8},
 	{ 	 24,  3,  8,  8,  8,  8,	 0,	 1,	 2,	-1, vlFalse,  vlTrue,	ToBlueScreen,	FromBlueScreen,	IMAGE_FORMAT_RGB888_BLUESCREEN},
 	{ 	 24,  3,  8,  8,  8,  8,	 2,	 1,	 0,	-1, vlFalse,  vlTrue,	ToBlueScreen,	FromBlueScreen,	IMAGE_FORMAT_BGR888_BLUESCREEN},

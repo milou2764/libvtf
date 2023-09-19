@@ -18,14 +18,14 @@ using namespace VTFLib::Nodes;
 
 CVMTFile::CVMTFile()
 {
-	this->Root = 0;
+	this->Root = nullptr;
 }
 
 CVMTFile::CVMTFile(const CVMTFile &VMTFile)
 {
-	if(VMTFile.Root == 0)
+	if(VMTFile.Root == nullptr)
 	{
-		this->Root = 0;
+		this->Root = nullptr;
 	}
 	else
 	{
@@ -49,38 +49,38 @@ vlBool CVMTFile::Create(const vlChar *cRoot)
 vlVoid CVMTFile::Destroy()
 {
 	delete this->Root;
-	this->Root = 0;
+	this->Root = nullptr;
 }
 
 vlBool CVMTFile::IsLoaded() const
 {
-	return this->Root != 0;
+	return this->Root != nullptr;
 }
 
 vlBool CVMTFile::Load(const vlChar *cFileName)
 {
-	IO::Readers::CFileReader i = IO::Readers::CFileReader(cFileName);
+	auto i = IO::Readers::CFileReader(cFileName);
 	vlBool r = this->Load(&i);
 	return r;
 }
 
 vlBool CVMTFile::Load(const vlVoid *lpData, vlUInt uiBufferSize)
 {
-	IO::Readers::CMemoryReader i = IO::Readers::CMemoryReader(lpData, uiBufferSize);
+	auto i = IO::Readers::CMemoryReader(lpData, uiBufferSize);
 	vlBool r = this->Load(&i);
 	return r;
 }
 
 vlBool CVMTFile::Load(vlVoid *pUserData)
 {
-	IO::Readers::CProcReader i = IO::Readers::CProcReader(pUserData);
+	auto i = IO::Readers::CProcReader(pUserData);
 	vlBool r = this->Load(&i);
 	return r;
 }
 
 vlBool CVMTFile::Save(const vlChar *cFileName) const
 {
-	IO::Writers::CFileWriter w = IO::Writers::CFileWriter(cFileName);
+	auto w = IO::Writers::CFileWriter(cFileName);
 	return this->Save(&w);
 }
 
@@ -88,7 +88,7 @@ vlBool CVMTFile::Save(vlVoid *lpData, vlUInt uiBufferSize, vlUInt &uiSize) const
 {
 	uiSize = 0;
 
-	IO::Writers::CMemoryWriter MemoryWriter = IO::Writers::CMemoryWriter(lpData, uiBufferSize);
+	auto MemoryWriter = IO::Writers::CMemoryWriter(lpData, uiBufferSize);
 
 	vlBool bResult = this->Save(&MemoryWriter);
 
@@ -99,7 +99,7 @@ vlBool CVMTFile::Save(vlVoid *lpData, vlUInt uiBufferSize, vlUInt &uiSize) const
 
 vlBool CVMTFile::Save(vlVoid *pUserData) const
 {
-	IO::Writers::CProcWriter i = IO::Writers::CProcWriter(pUserData);
+	auto i = IO::Writers::CProcWriter(pUserData);
 	return this->Save(&i);
 }
 
@@ -128,19 +128,19 @@ private:
 
 public:
 	// Create a normal token.  cChar was the tokenized char.
-	CToken(EToken eToken, vlChar cChar = '\0') : eToken(eToken), cChar(cChar), lpString(0)
+	CToken(EToken eToken, vlChar cChar = '\0') : eToken(eToken), cChar(cChar), lpString(nullptr)
 	{
 		assert(eToken != TOKEN_CHAR && eToken != TOKEN_STRING && eToken != TOKEN_QUOTED_STRING);
 	}
 
 	// Create a char token.
-	CToken(vlChar cChar) : eToken(TOKEN_CHAR), cChar(cChar), lpString(0)
+	CToken(vlChar cChar) : eToken(TOKEN_CHAR), cChar(cChar), lpString(nullptr)
 	{
 
 	}
 
 	// Create a string token.
-	CToken(vlChar *lpString, vlBool bQuoted) : eToken(bQuoted ? TOKEN_QUOTED_STRING : TOKEN_STRING), cChar('\0'), lpString(0)
+	CToken(vlChar *lpString, vlBool bQuoted) : eToken(bQuoted ? TOKEN_QUOTED_STRING : TOKEN_STRING), cChar('\0'), lpString(nullptr)
 	{
 		this->lpString = new vlChar[strlen(lpString) + 1];
 		strcpy(this->lpString, lpString);
@@ -151,9 +151,9 @@ public:
 	{
 		this->eToken = Token.eToken;
 		this->cChar = Token.cChar;
-		this->lpString = 0;
+		this->lpString = nullptr;
 
-		if(Token.lpString != 0)
+		if(Token.lpString != nullptr)
 		{
 			this->lpString = new vlChar[strlen(Token.lpString) + 1];
 			strcpy(this->lpString, Token.lpString);
@@ -222,7 +222,7 @@ private:
 	CToken *NextToken;
 
 public:
-	CByteTokenizer(IO::Readers::IReader *Reader) : uiLine(1), Reader(Reader), CurrentToken(0), NextToken(0)
+	CByteTokenizer(IO::Readers::IReader *Reader) : uiLine(1), Reader(Reader), CurrentToken(nullptr), NextToken(nullptr)
 	{
 		this->GetNextToken();
 	}
@@ -255,7 +255,7 @@ private:
 		// TOKEN_SPECIAL.
 		if(lpSpecial)
 		{
-			for(vlChar *pSpecial = const_cast<vlChar *>(lpSpecial); *pSpecial != '\0'; pSpecial++)
+			for(auto pSpecial = const_cast<vlChar *>(lpSpecial); *pSpecial != '\0'; pSpecial++)
 			{
 				if(cChar == *pSpecial)
 				{
@@ -300,11 +300,11 @@ private:
 
 public:
 	// Get the current token and return the next one.
-	CToken *Next(const vlChar *lpSpecial = 0)
+	CToken *Next(const vlChar *lpSpecial = nullptr)
 	{
 		delete this->CurrentToken;
 		this->CurrentToken = this->NextToken;
-		this->NextToken = 0;
+		this->NextToken = nullptr;
 
 		if(lpSpecial && this->CurrentToken)
 		{
@@ -447,7 +447,6 @@ public:
 		// The parser doesn't care about anything else.
 		default:
 			throw "unexpected token";
-			break;
 		}
 	}
 
@@ -480,16 +479,14 @@ private:
 	CTokenizer *Tokenizer;
 
 public:
-	CParser(CTokenizer *Tokenizer) : Tokenizer(Tokenizer)
+	explicit CParser(CTokenizer *Tokenizer) : Tokenizer(Tokenizer)
 	{
 
 	}
-
-public:
 	CVMTGroupNode *Parse()
 	{
 		CToken *Token;
-		CVMTGroupNode *Group = 0;
+		CVMTGroupNode *Group = nullptr;
 
 		// Consume all newlines.
 		Token = this->Tokenizer->Next();
@@ -696,14 +693,14 @@ private:
 vlBool CVMTFile::Load(IO::Readers::IReader *Reader)
 {
 	delete this->Root;
-	this->Root = 0;
+	this->Root = nullptr;
 
 	if(!Reader->Open())
 		return vlFalse;
 
-	CByteTokenizer ByteTokenizer = CByteTokenizer(Reader);
-	CTokenizer Tokenizer = CTokenizer(&ByteTokenizer);
-	CParser Parser = CParser(&Tokenizer);
+	auto ByteTokenizer = CByteTokenizer(Reader);
+	auto Tokenizer = CTokenizer(&ByteTokenizer);
+	auto Parser = CParser(&Tokenizer);
 
 	try
 	{
@@ -716,233 +713,12 @@ vlBool CVMTFile::Load(IO::Readers::IReader *Reader)
 
 	Reader->Close();
 
-	return this->Root != 0;
+	return this->Root != nullptr;
 }
-
-/*vlBool CVMTFile::Load(IO::Readers::IReader *Reader)
-{
-	delete this->Root;
-	this->Root = 0;
-
-	if(!Reader->Open())
-		return vlFalse;
-
-	try
-	{
-		CVMTNode *Node = this->Load(Reader, vlFalse);
-
-		// Make sure we loaded a group.
-		if(Node->GetType() == NODE_TYPE_GROUP)
-		{
-			this->Root = static_cast<CVMTGroupNode *>(Node);
-		}
-		else
-		{
-			delete Node;
-		}
-	}
-	catch(...)
-	{
-		LastError.Set("Error parsing material.");
-	}
-
-	Reader->Close();
-
-	return this->Root != 0;
-}*/
-
-// This old load code wasn't "loose" enough and had problems
-// with *malformed* .vmt files.  Too bad, it was compact.  This
-// could be modified to read the stricter configuration files with
-// ease.
-
-//
-// Load()
-// Reads the next node.  Returns a group node, value node or
-// null (if there is nothing to parse).  Throws an exception if
-// there is an error parsing the file.
-//
-/*CVMTNode *CVMTFile::Load(IO::Readers::IReader *Reader, vlBool bInGroup)
-{
-	vlChar cChar;
-
-	vlUInt uiNameLength, uiValueLength;
-	vlChar cNameBuffer[1024], cValueBuffer[1024];
-
-	while(vlTrue)
-	{
-		if(!Reader->Read(cChar))
-		{
-			if(bInGroup)	// We are expecting a '}'.
-				throw 0;
-			else
-				return 0;	// We are expecting nothing, we are done.
-		}
-
-		if(isspace(cChar))
-			continue;
-
-		if(cChar == '\"')	// We have the start of something...
-		{
-			// Read the string.
-			uiNameLength = 0;
-			while(vlTrue)
-			{
-				if(!Reader->Read(cChar))
-					throw 0;
-
-				if(cChar == '\"')	// We found the end of the string.
-					break;
-
-				cNameBuffer[uiNameLength++] = cChar;
-			}
-			cNameBuffer[uiNameLength++] = '\0';
-
-			// Find out if we have a group or value.
-			while(vlTrue)
-			{
-				if(!Reader->Read(cChar))
-					throw 0;
-
-				if(isspace(cChar))
-					continue;
-
-				if(cChar == '{')	// We have a group.
-				{
-					CVMTGroupNode *Group = new CVMTGroupNode(cNameBuffer);
-
-					try	// Cleanup resources reverse-recursively on error.
-					{
-						while(vlTrue)
-						{
-							CVMTNode *Node = this->Load(Reader, vlTrue);
-							
-							if(Node == 0)
-								break;
-
-							// We can do this because we are friends.
-							Group->AddNode(Node);
-						}
-					}
-					catch(...)
-					{
-						delete Group;
-						throw 0;
-					}
-
-					return Group;
-				}
-				else if(cChar == '\"')	// We have a string value.
-				{
-					// Read the value (string).
-					uiValueLength = 0;
-					while(vlTrue)
-					{
-						if(!Reader->Read(cChar))
-							throw 0;
-
-						if(cChar == '\"')	// We found the end of the string.
-							break;
-
-						cValueBuffer[uiValueLength++] = cChar;
-					}
-					cValueBuffer[uiValueLength++] = '\0';
-
-					return new CVMTStringNode(cNameBuffer, cValueBuffer);
-				}
-				else if((cChar >= '0' && cChar <= '9') || cChar == '.' || cChar == '+' || cChar == '-')	// We have a numeric value.
-				{
-					vlBool bInteger = cChar != '.';
-
-					// Read the value (numeric).
-					uiValueLength = 0;
-					cValueBuffer[uiValueLength++] = cChar;
-					while(vlTrue)
-					{
-						if(!Reader->Read(cChar))
-							throw 0;
-
-						if(isspace(cChar))	// We found the end of the number.
-							break;
-
-						if(cChar == '.')
-						{
-							if(bInteger)
-								bInteger = vlFalse;
-							else
-								throw 0;
-						}
-
-						if((cChar < '0' || cChar > '9') && cChar != '.')
-							throw 0;
-
-						cValueBuffer[uiValueLength++] = cChar;
-					}
-					cValueBuffer[uiValueLength++] = '\0';
-
-					if(bInteger)
-					{
-						return new CVMTIntegerNode(cNameBuffer, cValueBuffer);
-					}
-					else
-					{
-						return new CVMTSingleNode(cNameBuffer, cValueBuffer);
-					}
-				}
-				else if(cChar == '/')	// We have a comment, scan past it.
-				{
-					if(!Reader->Read(cChar))
-						throw 0;
-
-					if(cChar != '/')
-						throw 0;
-
-					while(vlTrue)
-					{
-						if(!Reader->Read(cChar))
-							throw 0;
-
-						if(cChar == '\n')	// We found the end of the comment.
-							break;
-					}
-				}
-				else	// We have a problem. ;)
-				{
-					throw 0;
-				}
-			}
-		}
-		else if(cChar == '/')	// We have a comment, scan past it.
-		{
-			if(!Reader->Read(cChar))
-				throw 0;
-
-			if(cChar != '/')
-				throw 0;
-
-			while(vlTrue)
-			{
-				if(!Reader->Read(cChar))
-					throw 0;
-
-				if(cChar == '\n')	// We found the end of the comment.
-					break;
-			}
-		}
-		else if(cChar == '}' && bInGroup)	// We could have the end of a group (if we are looking for it).
-		{
-			return 0;
-		}
-		else	// We have a problem. ;)
-		{
-			throw 0;
-		}
-	}
-}*/
 
 vlBool CVMTFile::Save(IO::Writers::IWriter *Writer) const
 {
-	if(this->Root == 0)
+	if(this->Root == nullptr)
 	{
 		LastError.Set("No material loaded.");
 		return vlFalse;
@@ -980,7 +756,7 @@ vlVoid CVMTFile::Save(IO::Writers::IWriter *Writer, CVMTNode *Node, vlUInt uiLev
 
 	if(Node->GetType() == NODE_TYPE_GROUP)
 	{
-		CVMTGroupNode *Group = static_cast<CVMTGroupNode *>(Node);
+		auto Group = static_cast<CVMTGroupNode *>(Node);
 
 		this->Indent(Writer, uiLevel);
 		sprintf(cBuffer, "\"%s\"\r\n", Group->GetName());
@@ -1001,7 +777,7 @@ vlVoid CVMTFile::Save(IO::Writers::IWriter *Writer, CVMTNode *Node, vlUInt uiLev
 	}
 	else if(Node->GetType() == NODE_TYPE_STRING)
 	{
-		CVMTStringNode *String = static_cast<CVMTStringNode *>(Node);
+		auto String = static_cast<CVMTStringNode *>(Node);
 
 		this->Indent(Writer, uiLevel);
 		sprintf(cBuffer, "\"%s\" \"%s\"\r\n", String->GetName(), String->GetValue());
@@ -1009,7 +785,7 @@ vlVoid CVMTFile::Save(IO::Writers::IWriter *Writer, CVMTNode *Node, vlUInt uiLev
 	}
 	else if(Node->GetType() == NODE_TYPE_INTEGER)
 	{
-		CVMTIntegerNode *Integer = static_cast<CVMTIntegerNode *>(Node);
+		auto Integer = static_cast<CVMTIntegerNode *>(Node);
 
 		this->Indent(Writer, uiLevel);
 		sprintf(cBuffer, "\"%s\" %d\r\n", Integer->GetName(), Integer->GetValue());
@@ -1017,7 +793,7 @@ vlVoid CVMTFile::Save(IO::Writers::IWriter *Writer, CVMTNode *Node, vlUInt uiLev
 	}
 	else if(Node->GetType() == NODE_TYPE_SINGLE)
 	{
-		CVMTSingleNode *Single = static_cast<CVMTSingleNode *>(Node);
+		auto Single = static_cast<CVMTSingleNode *>(Node);
 
 		this->Indent(Writer, uiLevel);
 		sprintf(cBuffer, "\"%s\" %f\r\n", Single->GetName(), Single->GetValue());

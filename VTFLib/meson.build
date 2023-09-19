@@ -32,4 +32,5 @@ libvtf_lib = static_library('vtf', sources,
 libvtf_dep = declare_dependency(
   link_with: libvtf_lib,
   include_directories: libvtf_include,
+
 )
